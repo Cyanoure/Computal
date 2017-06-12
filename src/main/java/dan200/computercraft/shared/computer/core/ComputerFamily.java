@@ -10,5 +10,6 @@ public enum ComputerFamily {
     Normal,
     Advanced,
     Beginners,
-    Command
+    Command,
+    Metal,
 }

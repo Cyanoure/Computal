@@ -316,10 +316,16 @@ public class TurtlePlaceCommand implements ITurtleCommand {
             return TurtleCommandResult.failure("Out of fuel");
         }
 
+
         // Remember old block
         EnumFacing direction = m_direction.toWorldDir(turtle);
         World world = turtle.getWorld();
         BlockPos coordinates = WorldUtil.moveCoords(turtle.getPosition(), direction);
+        TurtlePlayer player = createPlayer(turtle, turtle.getPosition(), turtle.getDirection());
+
+        if (!PermissionHandler.canPlaceBlock(world, coordinates, player, EnumHand.MAIN_HAND)) {
+            return TurtleCommandResult.failure("Event Denied");
+        }
 
         IBlockState previousState;
         if (WorldUtil.isBlockInWorld(world, coordinates)) {

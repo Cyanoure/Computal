@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 public class TurtleDropCommand implements ITurtleCommand {
     private final InteractDirection m_direction;
@@ -51,6 +52,7 @@ public class TurtleDropCommand implements ITurtleCommand {
         EnumFacing side = direction.getOpposite();
 
         IInventory inventory = InventoryUtil.getInventory(world, newPosition, side);
+        IItemHandler itemHandler = InventoryUtil.getIItemHandler(world, newPosition, side);
         if (inventory != null) {
             // Drop the item into the inventory
             ItemStack remainder = InventoryUtil.storeItems(stack, inventory, side);
@@ -66,6 +68,8 @@ public class TurtleDropCommand implements ITurtleCommand {
             } else {
                 return TurtleCommandResult.failure("No space for items");
             }
+        } else if(itemHandler !=null) {
+            int[] i = InventoryUtil.makeSlotList(0,itemHandler.getSlots(),0);
         } else {
             // Drop the item into the world
             WorldUtil.dropItemStack(stack, world, oldPosition, direction);
@@ -73,5 +77,6 @@ public class TurtleDropCommand implements ITurtleCommand {
             turtle.playAnimation(TurtleAnimation.Wait);
             return TurtleCommandResult.success();
         }
+        return TurtleCommandResult.failure();
     }
 }

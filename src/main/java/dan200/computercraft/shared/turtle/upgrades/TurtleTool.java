@@ -9,6 +9,7 @@ package dan200.computercraft.shared.turtle.upgrades;
 import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
+import dan200.computercraft.shared.turtle.core.PermissionHandler;
 import dan200.computercraft.shared.turtle.core.TurtleBrain;
 import dan200.computercraft.shared.turtle.core.TurtlePlaceCommand;
 import dan200.computercraft.shared.turtle.core.TurtlePlayer;
@@ -205,13 +206,13 @@ public class TurtleTool implements ITurtleUpgrade {
         World world = turtle.getWorld();
         BlockPos position = turtle.getPosition();
         BlockPos newPosition = WorldUtil.moveCoords(position, direction);
+        TurtlePlayer turtlePlayer = TurtlePlaceCommand.createPlayer(turtle, position, direction);
 
         if (WorldUtil.isBlockInWorld(world, newPosition) &&
                 !world.isAirBlock(newPosition) &&
                 !WorldUtil.isLiquidBlock(world, newPosition)) {
             if (ComputerCraft.Config.turtlesObeyBlockProtection) {
                 // Check spawn protection
-                TurtlePlayer turtlePlayer = TurtlePlaceCommand.createPlayer(turtle, position, direction);
                 if (!ComputerCraft.isBlockEditable(world, newPosition, turtlePlayer)) {
                     return TurtleCommandResult.failure("Cannot break protected block");
                 }
@@ -221,6 +222,11 @@ public class TurtleTool implements ITurtleUpgrade {
             if (!canBreakBlock(world, newPosition)) {
                 return TurtleCommandResult.failure("Unbreakable block detected");
             }
+
+            if (!PermissionHandler.canBreakBlock(world, newPosition,turtlePlayer)) {
+                return TurtleCommandResult.failure("Event Denied");
+            }
+
 
             // Consume the items the block drops
             if (canHarvestBlock(world, newPosition)) {

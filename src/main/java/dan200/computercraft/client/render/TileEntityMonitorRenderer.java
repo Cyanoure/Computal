@@ -34,10 +34,12 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     public void renderTileEntityAt(TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i) {
         if (tileEntity != null) {
             GlStateManager.pushMatrix();
-            if(ComputerCraft.Config.monitorFullbright) {
-                Minecraft.getMinecraft().entityRenderer.disableLightmap();
+            if (ComputerCraft.Config.monitorFullbright) {
+                GlStateManager.disableLighting();
+                setLightmapDisabled(true);
                 renderMonitorAt(tileEntity, posX, posY, posZ, f, i);
-                Minecraft.getMinecraft().entityRenderer.enableLightmap();
+                setLightmapDisabled(true);
+                GlStateManager.enableLighting();
             } else {
                 renderMonitorAt(tileEntity, posX, posY, posZ, f, i);
             }

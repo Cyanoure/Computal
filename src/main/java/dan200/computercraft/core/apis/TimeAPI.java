@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 public class TimeAPI implements ILuaAPI {
@@ -59,7 +60,8 @@ public class TimeAPI implements ILuaAPI {
                 "getMinute",
                 "getSecound",
                 "getTime",
-                "parse"
+                "parse",
+                "msParse",
         };
     }
 
@@ -128,6 +130,17 @@ public class TimeAPI implements ILuaAPI {
                 String pattern = (String) args[0],
                         input = (String) args[1];
                 returnArray[0] = parseDate(pattern, input) / 1000;
+            case 9:
+                //msParse(Integer ms)
+                if (args.length < 1 || args[0] == null || !(args[0] instanceof Double))
+                    throw new LuaException("Integer expected!");
+                long millis = ((Double)args[0]).longValue();
+                return new Object[]{String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(millis),
+                        TimeUnit.MILLISECONDS.toMinutes(millis) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))};
         }
 
         if (calendarValue != -1 && returnArray[0] == null) {

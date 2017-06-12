@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -57,6 +59,11 @@ public class InventoryUtil {
     }
 
     // Methods for finding inventories:
+
+    public static IItemHandler getIItemHandler (World world, BlockPos pos, EnumFacing side) {
+        TileEntity tile = world.getTileEntity(pos);
+        return tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()) ? tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()) : null;
+    }
 
     public static IInventory getInventory(World world, BlockPos pos, EnumFacing side) {
         // Look for tile with inventory
@@ -155,7 +162,7 @@ public class InventoryUtil {
 
     // Private methods
 
-    private static int[] makeSlotList(int start, int range, int begin) {
+    public static int[] makeSlotList(int start, int range, int begin) {
         if (start < 0 || range == 0) {
             return null;
         }

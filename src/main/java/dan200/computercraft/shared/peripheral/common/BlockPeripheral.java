@@ -29,6 +29,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class BlockPeripheral extends BlockPeripheralBase {
     public BlockPeripheral() {
         setHardness(2.0f);
@@ -52,8 +54,8 @@ public class BlockPeripheral extends BlockPeripheralBase {
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        if (state.getBlock() != this) return 0;
+    public int getLightValue(@Nonnull IBlockState state, IBlockAccess world, @Nonnull BlockPos pos) {
+        if (!state.getPropertyKeys().contains(Properties.VARIANT)) return 0;
         switch (getPeripheralType(world, pos)) {
             case AdvancedMonitor:
                 return 7;
@@ -387,7 +389,9 @@ public class BlockPeripheral extends BlockPeripheralBase {
 
     @Override
     public PeripheralType getPeripheralType(IBlockState state) {
-        return state.getValue(Properties.VARIANT).getPeripheralType();
+        if (state.getPropertyKeys().contains(Properties.VARIANT))
+            return state.getValue(Properties.VARIANT).getPeripheralType();
+        return PeripheralType.DiskDrive;
     }
 
     @Override

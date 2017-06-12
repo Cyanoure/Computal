@@ -1,15 +1,17 @@
 package dan200.computercraft.core.apis;
 
+import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.computer.IComputerEnvironment;
 import dan200.computercraft.core.terminal.Terminal;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.luaj.vm2.ast.Str;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ServerAPI implements ILuaAPI {
     private Terminal m_terminal;
@@ -48,7 +50,9 @@ public class ServerAPI implements ILuaAPI {
                 {
                         "getOnlinePlayerUUIDs",
                         "getOnlinePlayerNames",
-                        "getNameFromUUID"
+                        "getCurrentPlayerCount",
+                        "getNameFromUUID",
+                        "getUptime"
                 };
     }
 
@@ -57,24 +61,45 @@ public class ServerAPI implements ILuaAPI {
         List<EntityPlayerMP> playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
         switch (method) {
             case 0:
-                String[] players = new String[playerList.size()];
+                String playerUUIDs = "";
                 for (int i = 0; i < playerList.size(); i++) {
                     EntityPlayerMP player = playerList.get(i);
-                    players[i] = player.getUniqueID().toString();
+                    playerUUIDs += player.getUniqueID().toString();
+                    if (i < playerList.size() - 1)
+                        playerUUIDs += ",";
                 }
-                return players;
+                return new Object[]{playerUUIDs};
             case 1:
-                String[] playerNames = new String[playerList.size()];
+                String playerNames = "";
                 for (int i = 0; i < playerList.size(); i++) {
                     EntityPlayerMP player = playerList.get(i);
-                    playerNames[i] = player.getDisplayNameString();
+                    playerNames += player.getDisplayNameString();
+                    if (i < playerList.size() - 1)
+                        playerNames += ",";
                 }
-                return playerNames;
+                return new Object[]{playerNames};
             case 2:
+                return new Object[]{playerList.size()};
+            case 3:
                 if (arguments.length < 1 || !(arguments[0] instanceof String))
                     throw new LuaException("Expected String");
-                String name = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(UUID.fromString((String) arguments[0])).getName();
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString((String) arguments[0]);
+                } catch (Exception e) {
+                    if (e.getMessage().contains("Invalid UUID"))
+                        throw new LuaException("Invalid UUID");
+                    uuid = null;
+                }
+                if (uuid == null)
+                    throw new LuaException("Unexpected Error");
+                EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(uuid);
+                if (player == null)
+                    throw new LuaException("Player Not Found");
+                String name = player.getDisplayNameString();
                 return new Object[]{name};
+            case 4:
+                return new Object[]{ComputerCraft.UPTIME.elapsed(TimeUnit.MILLISECONDS)};
         }
         return new Object[0];
     }

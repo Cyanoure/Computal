@@ -6,6 +6,7 @@
 
 package dan200.computercraft;
 
+import com.google.common.base.Stopwatch;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.media.IMedia;
@@ -16,10 +17,12 @@ import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.command.CommandUptime;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
+import dan200.computercraft.shared.computer.blocks.TileMetalComputer;
 import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
 import dan200.computercraft.shared.computer.blocks.BlockComputer;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
@@ -74,10 +77,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 ///////////////
 // UNIVERSAL //
@@ -93,12 +93,16 @@ public class ComputerCraft {
     // ComputerCraftEdu uses ID 104
     public static final int printoutGUIID = 105;
     public static final int pocketComputerGUIID = 106;
+    public static final int metalGuiID = 107;
     public static final int terminalWidth_computer = 51;
     public static final int terminalHeight_computer = 19;
     public static final int terminalWidth_turtle = 39;
     public static final int terminalHeight_turtle = 13;
     public static final int terminalWidth_pocketComputer = 26;
     public static final int terminalHeight_pocketComputer = 20;
+    public static final Stopwatch UPTIME = Stopwatch.createUnstarted();
+
+
     private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
     // Registries
     public static ClientComputerRegistry clientComputerRegistry = new ClientComputerRegistry();
@@ -191,6 +195,11 @@ public class ComputerCraft {
     public static void openComputerGUI(EntityPlayer player, TileComputer computer) {
         BlockPos pos = computer.getPos();
         player.openGui(ComputerCraft.instance, ComputerCraft.computerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static void openComputerGUI(EntityPlayer player, TileMetalComputer computer) {
+        BlockPos pos = computer.getPos();
+        player.openGui(ComputerCraft.instance, ComputerCraft.metalGuiID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static void openPrinterGUI(EntityPlayer player, TilePrinter printer) {
@@ -624,10 +633,14 @@ public class ComputerCraft {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandUptime());
     }
 
     @Mod.EventHandler
     public void onServerStart(FMLServerStartedEvent event) {
+
+        if(!UPTIME.isRunning())
+            UPTIME.start();
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             ComputerCraft.serverComputerRegistry.reset();
             WirelessNetwork.resetNetworks();
@@ -636,6 +649,8 @@ public class ComputerCraft {
 
     @Mod.EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
+        if(UPTIME.isRunning())
+            UPTIME.stop();
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             ComputerCraft.serverComputerRegistry.reset();
             WirelessNetwork.resetNetworks();
