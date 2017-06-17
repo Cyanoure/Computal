@@ -37,6 +37,10 @@ public class ServerComputer extends ServerTerminal
     private boolean m_changedLastFrame;
     private int m_ticksSincePing;
 
+     public boolean isUpToDate() {
+         return m_ticksSincePing == 0;
+     }
+
     public ServerComputer(World world, int computerID, String label, int instanceID, ComputerFamily family, int terminalWidth, int terminalHeight) {
         super(family != ComputerFamily.Normal, terminalWidth, terminalHeight);
         m_instanceID = instanceID;

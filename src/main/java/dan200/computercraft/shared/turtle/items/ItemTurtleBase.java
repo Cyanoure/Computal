@@ -27,6 +27,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +43,15 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
     public abstract ItemStack create(int id, String label, Colour colour, ITurtleUpgrade leftUpgrade, ITurtleUpgrade rightUpgrade, int fuelLevel, ResourceLocation overlay);
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
-        List<ItemStack> all = new ArrayList<ItemStack>();
-        ComputerCraft.addAllUpgradedTurtles(all);
-        for (ItemStack stack : all) {
-            if (stack.getItem() == this) {
-                list.add(stack);
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs)) {
+            List<ItemStack> all = new ArrayList<ItemStack>();
+            ComputerCraft.addAllUpgradedTurtles(all);
+            for (ItemStack stack : all) {
+                if (stack.getItem() == this) {
+                    list.add(stack);
+                }
             }
         }
     }

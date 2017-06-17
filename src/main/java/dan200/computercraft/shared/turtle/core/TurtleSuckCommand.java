@@ -90,7 +90,7 @@ public class TurtleSuckCommand implements ITurtleCommand {
                         // Suck up the item
                         foundItems = true;
                         EntityItem entityItem = (EntityItem) entity;
-                        ItemStack stack = entityItem.getEntityItem().copy();
+                        ItemStack stack = entityItem.getItem().copy();
                         ItemStack storeStack;
                         ItemStack leaveStack;
                         if (stack.getCount() > m_quantity) {
@@ -106,12 +106,12 @@ public class TurtleSuckCommand implements ITurtleCommand {
                             if (remainder.isEmpty() && leaveStack.isEmpty()) {
                                 entityItem.setDead();
                             } else if (remainder.isEmpty()) {
-                                entityItem.setEntityItemStack(leaveStack);
+                                entityItem.setItem(leaveStack);
                             } else if (leaveStack.isEmpty()) {
-                                entityItem.setEntityItemStack(remainder);
+                                entityItem.setItem(remainder);
                             } else {
                                 leaveStack.grow(remainder.getCount());
-                                entityItem.setEntityItemStack(leaveStack);
+                                entityItem.setItem(leaveStack);
                             }
                             break;
                         }

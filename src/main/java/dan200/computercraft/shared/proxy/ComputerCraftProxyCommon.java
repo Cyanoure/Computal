@@ -12,16 +12,14 @@ import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.core.computer.MainThread;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
 import dan200.computercraft.shared.common.TileGeneric;
-import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
-import dan200.computercraft.shared.computer.blocks.BlockComputer;
-import dan200.computercraft.shared.computer.blocks.TileCommandComputer;
-import dan200.computercraft.shared.computer.blocks.TileComputer;
+import dan200.computercraft.shared.computer.blocks.*;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.inventory.ContainerComputer;
 import dan200.computercraft.shared.computer.items.ComputerItemFactory;
 import dan200.computercraft.shared.computer.items.ItemCommandComputer;
 import dan200.computercraft.shared.computer.items.ItemComputer;
+import dan200.computercraft.shared.computer.items.ItemMetalComputer;
 import dan200.computercraft.shared.media.common.DefaultMediaProvider;
 import dan200.computercraft.shared.media.inventory.ContainerHeldItem;
 import dan200.computercraft.shared.media.items.ItemDiskExpanded;
@@ -50,16 +48,14 @@ import dan200.computercraft.shared.pocket.peripherals.PocketModem;
 import dan200.computercraft.shared.pocket.recipes.PocketComputerUpgradeRecipe;
 import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.inventory.ContainerTurtle;
-import dan200.computercraft.shared.util.Colour;
-import dan200.computercraft.shared.util.CreativeTabMain;
-import dan200.computercraft.shared.util.ImpostorRecipe;
-import dan200.computercraft.shared.util.ImpostorShapelessRecipe;
+import dan200.computercraft.shared.util.*;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
@@ -82,8 +78,13 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
+import nomansminecraft.lib.util.RecipeHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+
+import static net.minecraft.init.Blocks.STONE;
+import static net.minecraft.item.ItemStack.EMPTY;
 
 public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
     public ComputerCraftProxyCommon() {
@@ -212,6 +213,12 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
         GameRegistry.register(ComputerCraft.Blocks.computer);
         GameRegistry.register(new ItemComputer(ComputerCraft.Blocks.computer).setRegistryName("computer"));
 
+        //Metal Computer (1.12)
+        ComputerCraft.Blocks.metalComputer = new BlockMetalComputer();
+        ComputerCraft.Blocks.metalComputer.setRegistryName("metal_computer");
+        GameRegistry.register(ComputerCraft.Blocks.metalComputer);
+        GameRegistry.register(new ItemMetalComputer(ComputerCraft.Blocks.metalComputer).setRegistryName("metal_computer"));
+
         // Peripheral
         ComputerCraft.Blocks.peripheral = new BlockPeripheral();
         ComputerCraft.Blocks.peripheral.setRegistryName("peripheral");
@@ -270,105 +277,133 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
 
         // Recipes
         // Computer
+
         ItemStack computer = ComputerItemFactory.create(-1, null, ComputerFamily.Normal);
-        GameRegistry.addRecipe(computer,
-                "XXX", "XYX", "XZX",
-                'X', Blocks.STONE,
-                'Y', Items.REDSTONE,
-                'Z', Blocks.GLASS_PANE
-        );
+
+        ItemStack redstone = new ItemStack(Items.REDSTONE);
+        ItemStack gold = new ItemStack(Items.GOLD_INGOT);
+        RecipeHelper.addShaped("cc-computer",computer,3,3,
+                STONE, STONE, STONE,
+                STONE,redstone, STONE,
+                STONE,Blocks.GLASS_PANE, STONE
+                );
 
         // Advanced Computer
         ItemStack advancedComputer = ComputerItemFactory.create(-1, null, ComputerFamily.Advanced);
-        GameRegistry.addRecipe(advancedComputer,
-                "XXX", "XYX", "XZX",
-                'X', Items.GOLD_INGOT,
-                'Y', Items.REDSTONE,
-                'Z', Blocks.GLASS_PANE
+        RecipeHelper.addShaped("cc-computer",advancedComputer,3,3,
+                gold,gold,gold,
+                gold,redstone,gold,
+                gold,Blocks.GLASS_PANE,gold
         );
+
+        for(BlockMetalComputer.BlockType metal : BlockMetalComputer.BlockType.values()) {
+            String ingot = "ingot" + StringUtils.capitalize(metal.getName());
+            ItemStack metalComputer = ComputerItemFactory.createMetal(-1, null, ComputerFamily.Metal, metal);
+            RecipeHelper.addShaped("cc-computer", metalComputer, 3, 3,
+                    ingot, ingot, ingot,
+                    ingot, redstone, ingot,
+                    ingot, Blocks.GLASS_PANE, ingot
+            );
+        }
 
         // Disk Drive
         ItemStack diskDrive = PeripheralItemFactory.create(PeripheralType.DiskDrive, null, 1);
-        GameRegistry.addRecipe(diskDrive,
-                "XXX", "XYX", "XYX",
-                'X', Blocks.STONE,
-                'Y', Items.REDSTONE
+        RecipeHelper.addShaped(diskDrive,3,3,
+                STONE, STONE, STONE,
+                STONE,redstone, STONE,
+                STONE,redstone, STONE
         );
-
         // Wireless Modem
         ItemStack wirelessModem = PeripheralItemFactory.create(PeripheralType.WirelessModem, null, 1);
-        GameRegistry.addRecipe(wirelessModem,
-                "XXX", "XYX", "XXX",
-                'X', Blocks.STONE,
-                'Y', Items.ENDER_PEARL
+        ItemStack enderPearl = new ItemStack(Items.ENDER_PEARL);
+        RecipeHelper.addShaped("cc-modem",wirelessModem,3,3,
+                STONE, STONE, STONE,
+                STONE,enderPearl, STONE,
+                STONE, STONE, STONE
         );
 
         // Monitor
         ItemStack monitor = PeripheralItemFactory.create(PeripheralType.Monitor, null, 1);
-        GameRegistry.addRecipe(monitor,
+        /*GameRegistry.addRecipe(monitor,
                 "XXX", "XYX", "XXX",
                 'X', Blocks.STONE,
                 'Y', Blocks.GLASS_PANE
+        );*/
+        RecipeHelper.addShaped("cc-monitor",monitor,3,3,
+                STONE, STONE, STONE,
+                STONE,Blocks.GLASS_PANE, STONE,
+                STONE, STONE, STONE
         );
+
 
         // PrinterEmpty
         ItemStack printer = PeripheralItemFactory.create(PeripheralType.Printer, null, 1);
-        GameRegistry.addRecipe(printer,
-                "XXX", "XYX", "XZX",
-                'X', Blocks.STONE,
-                'Y', Items.REDSTONE,
-                'Z', new ItemStack(Items.DYE, 1, 0) // 0 = Black
+        RecipeHelper.addShaped(printer,3,3,
+                STONE, STONE, STONE,
+                STONE,enderPearl, STONE,
+                STONE, STONE, STONE
         );
+
 
         // Advanced Monitor
         ItemStack advancedMonitors = PeripheralItemFactory.create(PeripheralType.AdvancedMonitor, null, 4);
-        GameRegistry.addRecipe(advancedMonitors,
+        /*GameRegistry.addRecipe(advancedMonitors,
                 "XXX", "XYX", "XXX",
-                'X', Items.GOLD_INGOT,
+                'X', gold,
                 'Y', Blocks.GLASS_PANE
-        );
+        );*/
 
+        RecipeHelper.addShaped("cc-monitor",advancedMonitors,3,3,
+                gold,gold,gold,
+                gold,Blocks.GLASS_PANE,gold,
+                gold,gold,gold
+        );
         // Networking Cable
         ItemStack cable = PeripheralItemFactory.create(PeripheralType.Cable, null, 6);
-        GameRegistry.addRecipe(cable,
+        /*GameRegistry.addRecipe(cable,
                 " X ", "XYX", " X ",
                 'X', Blocks.STONE,
-                'Y', Items.REDSTONE
+                'Y', redstone
+        );*/
+        RecipeHelper.addShaped(cable,3,3,
+                EMPTY, STONE,EMPTY,
+                STONE,redstone,STONE,
+                EMPTY,STONE,EMPTY
         );
 
         // Wired Modem
         ItemStack wiredModem = PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1);
-        GameRegistry.addRecipe(wiredModem,
+        /*GameRegistry.addRecipe(wiredModem,
                 "XXX", "XYX", "XXX",
                 'X', Blocks.STONE,
-                'Y', Items.REDSTONE
-        );
-
-        // Computer
-        ItemStack commandComputer = ComputerItemFactory.create(-1, null, ComputerFamily.Command);
-        GameRegistry.addRecipe(commandComputer,
-                "XXX", "XYX", "XZX",
-                'X', Blocks.STONE,
-                'Y', Blocks.COMMAND_BLOCK,
-                'Z', Blocks.GLASS_PANE
+                'Y', redstone
+        );*/
+        RecipeHelper.addShaped("cc-modem",wiredModem,3,3,
+                STONE, STONE,STONE,
+                STONE,redstone,STONE,
+                STONE,STONE,STONE
         );
 
         // Advanced Modem
         ItemStack advancedModem = PeripheralItemFactory.create(PeripheralType.AdvancedModem, null, 1);
-        GameRegistry.addRecipe(advancedModem,
+        /*GameRegistry.addRecipe(advancedModem,
                 "XXX", "XYX", "XXX",
-                'X', Items.GOLD_INGOT,
+                'X', gold,
                 'Y', Items.ENDER_EYE
+        );*/
+        RecipeHelper.addShaped("cc-modem",advancedModem,3,3,
+                gold, gold,gold,
+                gold,redstone,gold,
+                gold,gold,gold
         );
 
         // Disk
-        GameRegistry.addRecipe(new DiskRecipe());
+        RecipeHelper.addRecipe("disk", new DiskRecipe());
 
         // Impostor Disk recipes (to fool NEI)
         ItemStack paper = new ItemStack(Items.PAPER, 1);
-        ItemStack redstone = new ItemStack(Items.REDSTONE, 1);
         ItemStack basicDisk = ItemDiskLegacy.createFromIDAndColour(-1, null, Colour.Blue.getHex());
-        GameRegistry.addRecipe(new ImpostorShapelessRecipe(basicDisk, new Object[]{redstone, paper}));
+        //GameRegistry.addRecipe(new ImpostorShapelessRecipe(basicDisk, new Object[]{redstone, paper}));
 
         for (int colour = 0; colour < 16; ++colour) {
             ItemStack disk = ItemDiskLegacy.createFromIDAndColour(-1, null, Colour.values()[colour].getHex());
@@ -376,18 +411,18 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
             for (int otherColour = 0; otherColour < 16; ++otherColour) {
                 if (colour != otherColour) {
                     ItemStack otherDisk = ItemDiskLegacy.createFromIDAndColour(-1, null, Colour.values()[colour].getHex());
-                    GameRegistry.addRecipe(new ImpostorShapelessRecipe(disk, new Object[]{
+                    /*GameRegistry.addRecipe(new ImpostorShapelessRecipe(disk, new Object[]{
                             otherDisk, dye
-                    }));
+                    }));*/
                 }
             }
-            GameRegistry.addRecipe(new ImpostorShapelessRecipe(disk, new Object[]{
+            /*GameRegistry.addRecipe(new ImpostorShapelessRecipe(disk, new Object[]{
                     redstone, paper, dye
-            }));
+            }));*/
         }
 
         // Printout
-        GameRegistry.addRecipe(new PrintoutRecipe());
+        //GameRegistry.addRecipe(new PrintoutRecipe());
 
         ItemStack singlePrintout = ItemPrintout.createSingleFromTitleAndText(null, null, null);
         ItemStack multiplePrintout = ItemPrintout.createMultipleFromTitleAndText(null, null, null);
@@ -395,28 +430,28 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
 
         // Impostor Printout recipes (to fool NEI)
         ItemStack string = new ItemStack(Items.STRING, 1, 0);
-        GameRegistry.addRecipe(new ImpostorShapelessRecipe(multiplePrintout, new Object[]{singlePrintout, singlePrintout, string}));
+       // GameRegistry.addRecipe(new ImpostorShapelessRecipe(multiplePrintout, new Object[]{singlePrintout, singlePrintout, string}));
 
         ItemStack leather = new ItemStack(Items.LEATHER, 1, 0);
-        GameRegistry.addRecipe(new ImpostorShapelessRecipe(bookPrintout, new Object[]{leather, singlePrintout, string}));
+       // GameRegistry.addRecipe(new ImpostorShapelessRecipe(bookPrintout, new Object[]{leather, singlePrintout, string}));
 
         // Pocket Computer
         ItemStack pocketComputer = PocketComputerItemFactory.create(-1, null, ComputerFamily.Normal, null);
-        GameRegistry.addRecipe(pocketComputer,
+        /*GameRegistry.addRecipe(pocketComputer,
                 "XXX", "XYX", "XZX",
                 'X', Blocks.STONE,
                 'Y', Items.GOLDEN_APPLE,
                 'Z', Blocks.GLASS_PANE
-        );
+        );*/
 
         // Advanced Pocket Computer
         ItemStack advancedPocketComputer = PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, null);
-        GameRegistry.addRecipe(advancedPocketComputer,
+        /*GameRegistry.addRecipe(advancedPocketComputer,
                 "XXX", "XYX", "XZX",
-                'X', Items.GOLD_INGOT,
+                'X', gold,
                 'Y', Items.GOLDEN_APPLE,
                 'Z', Blocks.GLASS_PANE
-        );
+        );*/
 
         // Register pocket upgrades
         ComputerCraft.PocketUpgrades.wirelessModem = new PocketModem(false);
@@ -425,24 +460,24 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
         ComputerCraftAPI.registerPocketUpgrade(ComputerCraft.PocketUpgrades.advancedModem);
 
         // Wireless Pocket Computer
-        GameRegistry.addRecipe(new PocketComputerUpgradeRecipe());
+        RecipeHelper.addRecipe("pocketUpgrade", new PocketComputerUpgradeRecipe());
 
         // Advanced Wireless Pocket Computer
         ItemStack advancedWirelessPocketComputer = PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, null);
 
         // Impostor Pocket Computer recipes (to fool NEI)
         for (IPocketUpgrade upgrade : ComputerCraft.getVanillaPocketUpgrades()) {
-            GameRegistry.addRecipe(new ImpostorRecipe(
+            /*GameRegistry.addRecipe(new ImpostorRecipe(
                     1, 2,
                     new ItemStack[]{upgrade.getCraftingItem(), pocketComputer},
                     PocketComputerItemFactory.create(-1, null, ComputerFamily.Normal, upgrade)
-            ));
+            ));*/
 
-            GameRegistry.addRecipe(new ImpostorRecipe(
+            /*GameRegistry.addRecipe(new ImpostorRecipe(
                     1, 2,
                     new ItemStack[]{upgrade.getCraftingItem(), advancedPocketComputer},
                     PocketComputerItemFactory.create(-1, null, ComputerFamily.Advanced, upgrade)
-            ));
+            ));*/
         }
 
         // Skulls (Easter Egg)
@@ -451,19 +486,20 @@ public abstract class ComputerCraftProxyCommon implements IComputerCraftProxy {
         tag.setString("SkullOwner", "dan200");
         ItemStack danHead = new ItemStack(Items.SKULL, 1, 3);
         danHead.setTagCompound(tag);
-        GameRegistry.addShapelessRecipe(danHead, computer, new ItemStack(Items.SKULL, 1, 1));
+        //GameRegistry.addShapelessRecipe(danHead, computer, new ItemStack(Items.SKULL, 1, 1));
 
         // Cloudy
         tag = new NBTTagCompound();
         tag.setString("SkullOwner", "Cloudhunter");
         ItemStack cloudyHead = new ItemStack(Items.SKULL, 1, 3);
         cloudyHead.setTagCompound(tag);
-        GameRegistry.addShapelessRecipe(cloudyHead, monitor, new ItemStack(Items.SKULL, 1, 1));
+        //GameRegistry.addShapelessRecipe(cloudyHead, monitor, new ItemStack(Items.SKULL, 1, 1));
     }
 
     private void registerTileEntities() {
         // Tile Entities
         GameRegistry.registerTileEntity(TileComputer.class, "computer");
+        GameRegistry.registerTileEntity(TileMetalComputer.class, "metal_computer");
         GameRegistry.registerTileEntity(TileDiskDrive.class, "diskdrive");
         GameRegistry.registerTileEntity(TileWirelessModem.class, "wirelessmodem");
         GameRegistry.registerTileEntity(TileMonitor.class, "monitor");

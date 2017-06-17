@@ -1,0 +1,135 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "computercraft:metal_computer",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal":[{}],
+    "inventory":[{}],
+    "facing": {
+      "north" : {
+
+      },
+      "south" : {
+        "y": 180
+      },
+      "east" : {
+        "y": 90
+      },
+      "west" : {
+        "y": 270
+      }
+    },
+    "state": {
+      "on" : {
+        "textures": {
+          "screen": "computercraft:blocks/new/screen_on"
+        }
+      },
+      "blinking" : {
+        "textures": {
+          "screen": "computercraft:blocks/new/screen_blink"
+        }
+      },
+      "off" : {
+        "textures": {
+          "screen": "computercraft:blocks/new/screen_off"
+        }
+      }
+    },
+    "type": {
+      "copper": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_copper",
+          "side": "computercraft:blocks/new/computer_side_copper",
+          "front": "computercraft:blocks/new/computer_front_copper"
+        }
+      },
+      "tin": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_tin",
+          "side": "computercraft:blocks/new/computer_side_tin",
+          "front": "computercraft:blocks/new/computer_front_tin"
+        }
+      },
+      "silver": {
+          "textures": {
+            "top": "computercraft:blocks/new/computer_top_silver",
+            "side": "computercraft:blocks/new/computer_side_silver",
+            "front": "computercraft:blocks/new/computer_front_silver"
+        }
+      },
+      "lead": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_lead",
+          "side": "computercraft:blocks/new/computer_side_lead",
+          "front": "computercraft:blocks/new/computer_front_lead"
+        }
+      },
+      "nickel": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_ferrous",
+          "side": "computercraft:blocks/new/computer_side_ferrous",
+          "front": "computercraft:blocks/new/computer_front_ferrous"
+        }
+      },
+      "platinum": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_platinum",
+          "side": "computercraft:blocks/new/computer_side_platinum",
+          "front": "computercraft:blocks/new/computer_front_platinum"
+        }
+      },
+      "mithril": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_mithril",
+          "side": "computercraft:blocks/new/computer_side_mithril",
+          "front": "computercraft:blocks/new/computer_front_mithril"
+        }
+      },
+      "bronze": {
+          "textures": {
+            "top": "computercraft:blocks/new/computer_top_bronze",
+            "side": "computercraft:blocks/new/computer_side_bronze",
+            "front": "computercraft:blocks/new/computer_front_bronze"
+        }
+      },
+      "invar": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_invar",
+          "side": "computercraft:blocks/new/computer_side_invar",
+          "front": "computercraft:blocks/new/computer_front_invar"
+        }
+      },
+      "electrum": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_electrum",
+          "side": "computercraft:blocks/new/computer_side_electrum",
+          "front": "computercraft:blocks/new/computer_front_electrum"
+        }
+      },
+      "signalum": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_signalum",
+          "side": "computercraft:blocks/new/computer_side_signalum",
+          "front": "computercraft:blocks/new/computer_front_signalum"
+        }
+      },
+      "lumium": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_lumium",
+          "side": "computercraft:blocks/new/computer_side_lumium",
+          "front": "computercraft:blocks/new/computer_front_lumium"
+        }
+      },
+      "enderium": {
+        "textures": {
+          "top": "computercraft:blocks/new/computer_top_enderium",
+          "side": "computercraft:blocks/new/computer_side_enderium",
+          "front": "computercraft:blocks/new/computer_front_enderium"
+        }
+      }
+    }
+  }
+}

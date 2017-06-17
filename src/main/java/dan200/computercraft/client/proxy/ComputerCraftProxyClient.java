@@ -12,11 +12,13 @@ import dan200.computercraft.client.render.TileEntityMonitorRenderer;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
+import dan200.computercraft.shared.computer.items.ItemCommandComputer;
 import dan200.computercraft.shared.computer.items.ItemComputer;
 import dan200.computercraft.shared.media.inventory.ContainerHeldItem;
 import dan200.computercraft.shared.media.items.ItemDiskLegacy;
 import dan200.computercraft.shared.media.items.ItemPrintout;
 import dan200.computercraft.shared.network.ComputerCraftPacket;
+import dan200.computercraft.shared.peripheral.common.ItemAdvancedModem;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
@@ -26,24 +28,25 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
 import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -52,6 +55,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import nomansminecraft.lib.util.Platform;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -91,6 +95,9 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
                 return (family == ComputerFamily.Advanced) ? advanced_computer : computer;
             }
         }, new String[]{"computer", "advanced_computer"});
+
+        registerWithMapper(ComputerCraft.Blocks.metalComputer);
+
         registerItemModel(ComputerCraft.Blocks.peripheral, 0, "peripheral");
         registerItemModel(ComputerCraft.Blocks.peripheral, 1, "wireless_modem");
         registerItemModel(ComputerCraft.Blocks.peripheral, 2, "monitor");
@@ -245,11 +252,33 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
     @Override
     public String getRecordInfo(ItemStack recordStack) {
         List info = new ArrayList(1);
-        recordStack.getItem().addInformation(recordStack, null, info, false);
+        recordStack.getItem().addInformation(recordStack, Minecraft.getMinecraft().world, info, ITooltipFlag.TooltipFlags.NORMAL);
         if (info.size() > 0) {
             return info.get(0).toString();
         } else {
             return super.getRecordInfo(recordStack);
+        }
+    }
+    public static void registerWithMapper(Block block) {
+        if (Platform.isClient() && block != null) {
+            final String resourcePath = String.format("%s:%s", "computercraft", block.getRegistryName().getResourcePath());
+
+            ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
+                @Override
+                protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                    return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
+                }
+            });
+
+            NonNullList<ItemStack> subBlocks = NonNullList.create();
+            Item item = Item.getItemFromBlock(block);
+            item.getSubItems(block.getCreativeTabToDisplayOn(), subBlocks);
+
+            for (ItemStack stack : subBlocks) {
+                IBlockState state = block.getStateFromMeta(stack.getMetadata());
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(state.getProperties())));
+            }
+
         }
     }
 

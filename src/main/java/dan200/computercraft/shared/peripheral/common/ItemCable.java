@@ -11,6 +11,7 @@ import dan200.computercraft.shared.peripheral.PeripheralType;
 import dan200.computercraft.shared.peripheral.modem.TileCable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,6 +20,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemCable extends ItemPeripheralBase {
     public ItemCable(Block block) {
@@ -49,9 +53,16 @@ public class ItemCable extends ItemPeripheralBase {
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
-        list.add(PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1));
-        list.add(PeripheralItemFactory.create(PeripheralType.Cable, null, 1));
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs)) {
+            list.add(PeripheralItemFactory.create(PeripheralType.WiredModem, null, 1));
+            list.add(PeripheralItemFactory.create(PeripheralType.Cable, null, 1));
+        }
     }
 
     @Override

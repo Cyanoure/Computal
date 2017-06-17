@@ -55,7 +55,7 @@ public class ContainerPrinter extends Container {
     @Override
     public void addListener(IContainerListener crafting) {
         super.addListener(crafting);
-        crafting.sendProgressBarUpdate(this, 0, m_printer.isPrinting() ? 1 : 0);
+        crafting.sendWindowProperty(this, 0, m_printer.isPrinting() ? 1 : 0);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ContainerPrinter extends Container {
             for (int i = 0; i < listeners.size(); ++i) {
                 IContainerListener icrafting = listeners.get(i);
                 if (printing != m_lastPrinting) {
-                    icrafting.sendProgressBarUpdate(this, 0, printing ? 1 : 0);
+                    icrafting.sendWindowProperty(this, 0, printing ? 1 : 0);
                 }
             }
             m_lastPrinting = printing;

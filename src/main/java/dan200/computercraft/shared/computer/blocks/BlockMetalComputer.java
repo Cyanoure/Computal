@@ -18,10 +18,13 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -40,6 +43,11 @@ public class BlockMetalComputer extends BlockComputerBase {
                 .withProperty(Properties.METAL, BlockType.COPPER)
                 .withProperty(Properties.STATE, ComputerState.Off)
         );
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return state.getValue(Properties.METAL).ordinal();
     }
 
     @Override
@@ -90,6 +98,11 @@ public class BlockMetalComputer extends BlockComputerBase {
     }
 
     @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
     public ComputerFamily getFamily(int damage) {
         return ComputerFamily.Metal;
     }
@@ -123,6 +136,11 @@ public class BlockMetalComputer extends BlockComputerBase {
         public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
         public static final PropertyEnum<BlockType> METAL = PropertyEnum.create("type", BlockType.class);
         public static final PropertyEnum<ComputerState> STATE = PropertyEnum.create("state", ComputerState.class);
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+        return getStateFromMeta(meta);
     }
 
     public enum BlockType implements IStringSerializable {

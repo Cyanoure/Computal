@@ -21,8 +21,8 @@ public class PrintoutRecipe implements IRecipe {
     }
 
     @Override
-    public int getRecipeSize() {
-        return 3;
+    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+        return false;
     }
 
     @Override

@@ -11,6 +11,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.util.Colour;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,6 +21,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -44,7 +47,9 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs))
         for (int colour = 0; colour < 16; ++colour) {
             ItemStack stack = createFromIDAndColour(-1, null, Colour.values()[colour].getHex());
             if (stack.getItem() == this) {
@@ -70,8 +75,9 @@ public class ItemDiskLegacy extends Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean debug) {
-        if (debug) {
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World player, List list, ITooltipFlag debug) {
+        if (debug.func_194127_a()) {
             int id = getDiskID(stack);
             if (id >= 0) {
                 list.add("(Disk ID: " + id + ")");

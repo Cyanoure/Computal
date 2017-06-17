@@ -60,7 +60,7 @@ public class PocketAPI implements ILuaAPI {
         switch (method) {
             case 0: {
                 // equip
-                if (!(m_computer.getEntity() instanceof EntityPlayer)) {
+                if (!(m_computer.getEntity() instanceof EntityPlayer) || !m_computer.isInPlayerInventory()) {
                     throw new LuaException("Cannot find player");
                 }
 
@@ -110,7 +110,7 @@ public class PocketAPI implements ILuaAPI {
 
             case 1: {
                 // unequip
-                if (!(m_computer.getEntity() instanceof EntityPlayer)) {
+                if (!(m_computer.getEntity() instanceof EntityPlayer) || !m_computer.isInPlayerInventory()) {
                     throw new LuaException("Cannot find player");
                 }
 

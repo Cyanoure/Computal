@@ -11,11 +11,14 @@ import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -31,9 +34,11 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
         return damage;
     }
 
+
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean debug) {
-        if (debug) {
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List list, ITooltipFlag debug) {
+        if (debug.func_194127_a()) {
             int id = getComputerID(stack);
             if (id >= 0) {
                 list.add("(Computer ID: " + id + ")");

@@ -7,6 +7,8 @@
 package dan200.computercraft.shared.computer.items;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.core.computer.Computer;
+import dan200.computercraft.shared.computer.blocks.BlockMetalComputer;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.core.IComputer;
@@ -37,6 +39,14 @@ public class ComputerItemFactory {
                 return commandComputer.create(id, label, family);
             }
         }
-        return null;
+        return ItemStack.EMPTY;
+    }
+    public static ItemStack createMetal(int id, String label, ComputerFamily family, BlockMetalComputer.BlockType metal) {
+        if(family!=ComputerFamily.Metal)
+            return ItemStack.EMPTY;
+
+        ItemMetalComputer metalComputer = (ItemMetalComputer) Item.getItemFromBlock(ComputerCraft.Blocks.metalComputer);
+
+        return metalComputer.create(id, label, family, metal);
     }
 }

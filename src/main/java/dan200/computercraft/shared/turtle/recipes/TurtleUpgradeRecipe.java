@@ -17,6 +17,7 @@ import dan200.computercraft.shared.util.Colour;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -29,8 +30,8 @@ public class TurtleUpgradeRecipe implements IRecipe {
     }
 
     @Override
-    public int getRecipeSize() {
-        return 3;
+    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+        return p_194133_1_>=2;
     }
 
     @Override
@@ -141,6 +142,21 @@ public class TurtleUpgradeRecipe implements IRecipe {
         Colour colour = itemTurtle.getColour(turtle);
         ResourceLocation overlay = itemTurtle.getOverlay(turtle);
         return TurtleItemFactory.create(computerID, label, colour, family, upgrades[0], upgrades[1], fuelLevel, overlay);
+    }
+
+    @Override
+    public NonNullList<Ingredient> func_192400_c() {
+        return NonNullList.create();
+    }
+
+    @Override
+    public String func_193358_e() {
+        return "";
+    }
+
+    @Override
+    public boolean func_192399_d() {
+        return true;
     }
 
     @Override

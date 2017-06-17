@@ -21,6 +21,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemComputer extends ItemComputerBase {
     public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
@@ -62,9 +64,12 @@ public class ItemComputer extends ItemComputerBase {
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
-        list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Normal));
-        list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Advanced));
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs)) {
+            list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Normal));
+            list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Advanced));
+        }
     }
 
     @Override

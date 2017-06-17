@@ -27,8 +27,13 @@ public class PocketComputerUpgradeRecipe implements IRecipe {
     }
 
     @Override
-    public int getRecipeSize() {
-        return 2;
+    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+        return p_194133_2_ >=2;
+    }
+
+    @Override
+    public boolean func_192399_d() {
+        return true;
     }
 
     @Override

@@ -142,6 +142,9 @@ public class GuiComputer extends GuiContainer {
 
         // Draw a border around the terminal
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        if(m_family==ComputerFamily.Metal) {
+            this.mc.getTextureManager().bindTexture(new ResourceLocation("computercraft","textures/gui/corners_metal.png"));
+        } else
         switch (m_family) {
             case Normal:
             default: {

@@ -12,12 +12,27 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 public class DiskRecipe implements IRecipe {
     public DiskRecipe() {
+    }
+
+    @Override
+    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+        return p_194133_1_>=2||p_194133_2_>=2;
+    }
+
+    @Override
+    public NonNullList<Ingredient> func_192400_c() {
+        NonNullList<Ingredient> list = NonNullList.withSize(2, Ingredient.field_193370_a);
+        for (int i = 0; i < list.size(); i++) {
+            list.set(i, Ingredient.func_193369_a(new ItemStack(i == 0 ? Items.REDSTONE : Items.PAPER)));
+        }
+        return list;
     }
 
     @Override
@@ -30,7 +45,7 @@ public class DiskRecipe implements IRecipe {
         for (int var5 = 0; var5 < inventory.getSizeInventory(); ++var5) {
             ItemStack var6 = inventory.getStackInSlot(var5);
 
-            if (var6 != null) {
+            if (!var6.isEmpty()) {
                 if (var6.getItem() instanceof ItemDiskLegacy) {
                     if (diskFound || redstoneFound || paperFound) // make sure no redstone or paper already accepted if disk there
                     {
@@ -116,11 +131,6 @@ public class DiskRecipe implements IRecipe {
         var17 = (var7 << 8) + var13;
         var17 = (var17 << 8) + var9;
         return ItemDiskLegacy.createFromIDAndColour(diskID, diskLabel, var17);
-    }
-
-    @Override
-    public int getRecipeSize() {
-        return 2;
     }
 
     @Override

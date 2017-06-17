@@ -41,6 +41,9 @@ public class PocketServerComputer extends ServerComputer implements IPocketAcces
         int value = getUserData().getInteger("modemLight");
         return value >= 0 && value <= 15 ? value : 0;
     }
+    public boolean isInPlayerInventory() {
+        return isUpToDate();
+    }
 
     @Override
     public PocketServerComputer setModemLight(int value) {

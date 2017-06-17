@@ -15,15 +15,13 @@ import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.util.Colour;
 import dan200.computercraft.shared.util.DirectionUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.ForgeModContainer;
 import org.lwjgl.opengl.GL11;
 
 public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMonitor> {
@@ -31,14 +29,14 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     }
 
     @Override
-    public void renderTileEntityAt(TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i) {
+    public void func_192841_a(TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i, float p_192841_10_) {
         if (tileEntity != null) {
             GlStateManager.pushMatrix();
             if (ComputerCraft.Config.monitorFullbright) {
                 GlStateManager.disableLighting();
                 setLightmapDisabled(true);
                 renderMonitorAt(tileEntity, posX, posY, posZ, f, i);
-                setLightmapDisabled(true);
+                setLightmapDisabled(false);
                 GlStateManager.enableLighting();
             } else {
                 renderMonitorAt(tileEntity, posX, posY, posZ, f, i);
@@ -92,7 +90,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
             // Get renderers
             Minecraft mc = Minecraft.getMinecraft();
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer renderer = tessellator.getBuffer();
+            BufferBuilder renderer = tessellator.getBuffer();
 
             // Get terminal
             ClientTerminal clientTerminal = (ClientTerminal) origin.getTerminal();

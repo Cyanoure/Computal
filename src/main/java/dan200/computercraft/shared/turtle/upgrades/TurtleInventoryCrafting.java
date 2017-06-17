@@ -43,15 +43,15 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
             for (int y = 0; y < TileTurtle.INVENTORY_HEIGHT; ++y) {
                 if (x < m_xStart || x >= m_xStart + 3 ||
                         y < m_yStart || y >= m_yStart + 3) {
-                    if (m_turtle.getInventory().getStackInSlot(x + y * TileTurtle.INVENTORY_WIDTH) != null) {
-                        return null;
+                    if (!m_turtle.getInventory().getStackInSlot(x + y * TileTurtle.INVENTORY_WIDTH).isEmpty()) {
+                        return ItemStack.EMPTY;
                     }
                 }
             }
         }
 
         // Check the actual crafting
-        return CraftingManager.getInstance().findMatchingRecipe(this, m_turtle.getWorld());
+        return CraftingManager.findMatchingRecipe(this, m_turtle.getWorld());
     }
 
     public ArrayList<ItemStack> doCrafting(World world, int maxCount) {
@@ -61,18 +61,18 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
 
         // Find out what we can craft
         ItemStack result = tryCrafting(0, 0);
-        if (result == null) {
+        if (result.isEmpty()) {
             result = tryCrafting(0, 1);
         }
-        if (result == null) {
+        if (result.isEmpty()) {
             result = tryCrafting(1, 0);
         }
-        if (result == null) {
+        if (result.isEmpty()) {
             result = tryCrafting(1, 1);
         }
 
         // Craft it
-        if (result != null) {
+        if (!result.isEmpty()) {
             // Special case: craft(0) just returns an empty list if crafting was possible
             ArrayList<ItemStack> results = new ArrayList<ItemStack>();
             if (maxCount == 0) {
@@ -86,7 +86,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
                 int minStackSize = 0;
                 for (int n = 0; n < size; ++n) {
                     ItemStack stack = getStackInSlot(n);
-                    if (stack != null && (minStackSize == 0 || minStackSize > stack.getCount())) {
+                    if (!stack.isEmpty() && (minStackSize == 0 || minStackSize > stack.getCount())) {
                         minStackSize = stack.getCount();
                     }
                 }
@@ -104,17 +104,17 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
             results.add(result);
 
             // Consume resources from the inventory
-            NonNullList<ItemStack> remainingItems = CraftingManager.getInstance().getRemainingItems(this, world);
+            NonNullList<ItemStack> remainingItems = CraftingManager.getRemainingItems(this, world);
             for (int n = 0; n < size; ++n) {
                 ItemStack stack = getStackInSlot(n);
-                if (stack != null) {
+                if (!stack.isEmpty()) {
                     decrStackSize(n, numToCraft);
 
                     ItemStack replacement = remainingItems.get(n);
                     if (!replacement.isEmpty()) {
                         if (!(replacement.isItemStackDamageable() && replacement.getItemDamage() >= replacement.getMaxDamage())) {
                             replacement.setCount(Math.min(numToCraft, replacement.getMaxStackSize()));
-                            if (getStackInSlot(n) == null) {
+                            if (getStackInSlot(n).isEmpty()) {
                                 setInventorySlotContents(n, replacement);
                             } else {
                                 results.add(replacement);
@@ -252,7 +252,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
     public void clear() {
         for (int i = 0; i < getSizeInventory(); ++i) {
             int j = modifyIndex(i);
-            m_turtle.getInventory().setInventorySlotContents(j, null);
+            m_turtle.getInventory().setInventorySlotContents(j, ItemStack.EMPTY);
         }
     }
 }

@@ -7,6 +7,7 @@
 package dan200.computercraft.shared.computer.items;
 
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.shared.computer.blocks.BlockMetalComputer;
 import dan200.computercraft.shared.computer.blocks.IComputerTile;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import net.minecraft.block.Block;
@@ -21,6 +22,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMetalComputer extends ItemComputerBase {
     public static int HIGHEST_DAMAGE_VALUE_ID = 16382;
@@ -33,25 +36,22 @@ public class ItemMetalComputer extends ItemComputerBase {
         setCreativeTab(ComputerCraft.mainCreativeTab);
     }
 
-    public ItemStack create(int id, String label, ComputerFamily family) {
+    public ItemStack create(int id, String label, ComputerFamily family, BlockMetalComputer.BlockType metal) {
         // Ignore types we can't handle
         if (family != ComputerFamily.Metal) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         // Build the damage
-        int damage = 0;
-        if (id >= 0 && id <= ItemMetalComputer.HIGHEST_DAMAGE_VALUE_ID) {
-            damage = id + 1;
-        }
+        int damage = metal.ordinal();
 
         // Return the stack
         ItemStack result = new ItemStack(this, 1, damage);
-        if (id > ItemMetalComputer.HIGHEST_DAMAGE_VALUE_ID) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("computerID", id);
-            result.setTagCompound(nbt);
-        }
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("computerID", id);
+        result.setTagCompound(nbt);
+
         if (label != null) {
             result.setStackDisplayName(label);
         }
@@ -59,10 +59,14 @@ public class ItemMetalComputer extends ItemComputerBase {
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
-        list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Normal));
-        list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Advanced));
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if (func_194125_a(tabs)) {
+            for (BlockMetalComputer.BlockType metal : BlockMetalComputer.BlockType.values())
+                list.add(ComputerItemFactory.createMetal(-1, null, ComputerFamily.Metal, metal));
+        }
     }
+
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
@@ -94,15 +98,9 @@ public class ItemMetalComputer extends ItemComputerBase {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         switch (getFamily(stack)) {
-            case Normal:
+            case Metal:
             default: {
-                return "tile.computercraft.computer";
-            }
-            case Advanced: {
-                return "tile.computercraft.advanced_computer";
-            }
-            case Command: {
-                return "tile.computercraft.command_computer";
+                return "tile.computercraft.metal_computer."+BlockMetalComputer.BlockType.get(stack.getMetadata()).getName();
             }
         }
     }

@@ -14,6 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCommandComputer extends ItemComputer {
     public ItemCommandComputer(Block block) {
@@ -45,7 +47,9 @@ public class ItemCommandComputer extends ItemComputer {
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs))
         list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Command));
     }
 

@@ -39,6 +39,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
+import nomansminecraft.lib.util.RecipeHelper;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -232,7 +233,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
         // Add a bunch of impostor recipes
         if (isUpgradeVanilla(upgrade)) {
             // Add fake recipes to fool NEI
-            List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+            //List<IRecipe> recipeList = CraftingManager.field_193380_a.getKeys();
             ItemStack craftingItem = upgrade.getCraftingItem();
 
             // A turtle just containing this upgrade
@@ -245,8 +246,8 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
                 if (!baseTurtle.isEmpty()) {
                     ItemStack craftedTurtle = TurtleItemFactory.create(-1, null, null, family, upgrade, null, 0, null);
                     ItemStack craftedTurtleFlipped = TurtleItemFactory.create(-1, null, null, family, null, upgrade, 0, null);
-                    recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{baseTurtle, craftingItem}, craftedTurtle));
-                    recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, baseTurtle}, craftedTurtleFlipped));
+                    //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{baseTurtle, craftingItem}, craftedTurtle));
+                   // recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, baseTurtle}, craftedTurtleFlipped));
 
                     // A turtle containing this upgrade and another upgrade
                     for (ITurtleUpgrade otherUpgrade : m_turtleUpgrades.values()) {
@@ -259,12 +260,12 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
                             ItemStack otherCraftedTurtleFlipped = TurtleItemFactory.create(-1, null, null, family, otherUpgrade, null, 0, null);
                             ItemStack comboCraftedTurtleFlipped = TurtleItemFactory.create(-1, null, null, family, otherUpgrade, upgrade, 0, null);
 
-                            recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{otherCraftingItem, craftedTurtle}, comboCraftedTurtle));
-                            recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{otherCraftedTurtle, craftingItem}, comboCraftedTurtle));
-                            recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftedTurtleFlipped, otherCraftingItem}, comboCraftedTurtleFlipped));
-                            recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, otherCraftedTurtleFlipped}, comboCraftedTurtleFlipped));
-                            recipeList.add(new ImpostorRecipe(3, 1, new ItemStack[]{otherCraftingItem, baseTurtle, craftingItem,}, comboCraftedTurtle));
-                            recipeList.add(new ImpostorRecipe(3, 1, new ItemStack[]{craftingItem, baseTurtle, otherCraftingItem}, comboCraftedTurtleFlipped));
+                            //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{otherCraftingItem, craftedTurtle}, comboCraftedTurtle));
+                            //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{otherCraftedTurtle, craftingItem}, comboCraftedTurtle));
+                            //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftedTurtleFlipped, otherCraftingItem}, comboCraftedTurtleFlipped));
+                            //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, otherCraftedTurtleFlipped}, comboCraftedTurtleFlipped));
+                            //recipeList.add(new ImpostorRecipe(3, 1, new ItemStack[]{otherCraftingItem, baseTurtle, craftingItem,}, comboCraftedTurtle));
+                            //recipeList.add(new ImpostorRecipe(3, 1, new ItemStack[]{craftingItem, baseTurtle, otherCraftingItem}, comboCraftedTurtleFlipped));
                         }
                     }
                 }
@@ -297,26 +298,22 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
 
         // Recipes
         // Turtle
-        GameRegistry.addRecipe(new TurtleRecipe(new Item[]{
+
+        //TODO
+        RecipeHelper.addRecipe("turtleRecipe",new TurtleRecipe(new Item[]{
                 Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT,
                 Items.IRON_INGOT, Item.getItemFromBlock(ComputerCraft.Blocks.computer), Items.IRON_INGOT,
                 Items.IRON_INGOT, Item.getItemFromBlock(Blocks.CHEST), Items.IRON_INGOT,
         }, ComputerFamily.Normal));
-        GameRegistry.addRecipe(new TurtleUpgradeRecipe());
+        //GameRegistry.addRecipe(new TurtleUpgradeRecipe());
+        RecipeHelper.addRecipe("turtleUpgrade",new TurtleUpgradeRecipe());
 
         // Impostor Turtle recipe (to fool NEI)
         ItemStack iron = new ItemStack(Items.IRON_INGOT, 1);
-        GameRegistry.addRecipe(new ImpostorRecipe(3, 3,
-                new ItemStack[]{
-                        iron, iron, iron,
-                        iron, ComputerItemFactory.create(-1, null, ComputerFamily.Normal), iron,
-                        iron, new ItemStack(Blocks.CHEST, 1), iron,
-                },
-                TurtleItemFactory.create(-1, null, null, ComputerFamily.Normal, null, null, 0, null)
-        ));
+
 
         // Advanced Turtle
-        GameRegistry.addRecipe(new TurtleRecipe(new Item[]{
+        RecipeHelper.addRecipe("advancedTurtleRecipe",new TurtleRecipe(new Item[]{
                 Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT,
                 Items.GOLD_INGOT, Item.getItemFromBlock(ComputerCraft.Blocks.computer), Items.GOLD_INGOT,
                 Items.GOLD_INGOT, Item.getItemFromBlock(Blocks.CHEST), Items.GOLD_INGOT,
@@ -324,14 +321,6 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
 
         // Impostor Advanced Turtle recipe (to fool NEI)
         ItemStack gold = new ItemStack(Items.GOLD_INGOT, 1);
-        GameRegistry.addRecipe(new ImpostorRecipe(3, 3,
-                new ItemStack[]{
-                        gold, gold, gold,
-                        gold, ComputerItemFactory.create(-1, null, ComputerFamily.Advanced), gold,
-                        gold, new ItemStack(Blocks.CHEST, 1), gold,
-                },
-                TurtleItemFactory.create(-1, null, null, ComputerFamily.Advanced, null, null, 0, null)
-        ));
 
         // Upgrades
         ComputerCraft.Upgrades.wirelessModem = new TurtleModem(false, new ResourceLocation("computercraft", "wireless_modem"), 1);
@@ -376,7 +365,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
         if (consumer != null) {
             // All checks have passed, lets dispatch the drops
             for (EntityItem entityItem : drops) {
-                consumer.consumeDrop(entity, entityItem.getEntityItem());
+                consumer.consumeDrop(entity, entityItem.getItem());
             }
             drops.clear();
         }

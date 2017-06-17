@@ -8,12 +8,20 @@ package dan200.computercraft.shared.util;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class ImpostorRecipe extends ShapedRecipes {
-    public ImpostorRecipe(int width, int height, ItemStack[] ingredients, ItemStack result) {
-        super(width, height, ingredients, result);
+
+    public ImpostorRecipe(String p_i47501_1_, int p_i47501_2_, int p_i47501_3_, NonNullList<Ingredient> p_i47501_4_, ItemStack p_i47501_5_) {
+        super(p_i47501_1_, p_i47501_2_, p_i47501_3_, p_i47501_4_, p_i47501_5_);
+    }
+
+    @Override
+    public boolean func_192399_d() {
+        return false;
     }
 
     @Override

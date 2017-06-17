@@ -7,6 +7,7 @@
 package dan200.computercraft.shared.media.items;
 
 import dan200.computercraft.ComputerCraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -17,6 +18,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -153,14 +156,17 @@ public class ItemPrintout extends Item {
     }
 
     @Override
-    public void getSubItems(Item itemID, CreativeTabs tabs, NonNullList<ItemStack> list) {
-        list.add(createSingleFromTitleAndText(null, new String[LINES_PER_PAGE], new String[LINES_PER_PAGE]));
-        list.add(createMultipleFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));
-        list.add(createBookFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(func_194125_a(tabs)) {
+            list.add(createSingleFromTitleAndText(null, new String[LINES_PER_PAGE], new String[LINES_PER_PAGE]));
+            list.add(createMultipleFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));
+            list.add(createBookFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));
+        }
     }
 
     @Override
-    public void addInformation(ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean flag) {
+    public void addInformation(ItemStack itemstack, World par2EntityPlayer, List list, ITooltipFlag flag) {
         String title = getTitle(itemstack);
         if (title != null && title.length() > 0) {
             list.add(title);
@@ -190,7 +196,7 @@ public class ItemPrintout extends Item {
         if (!world.isRemote) {
             ComputerCraft.openPrintoutGUI(player, hand);
         }
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     public enum Type {

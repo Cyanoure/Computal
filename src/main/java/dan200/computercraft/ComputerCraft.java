@@ -22,10 +22,7 @@ import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
 import dan200.computercraft.shared.common.DefaultBundledRedstoneProvider;
-import dan200.computercraft.shared.computer.blocks.TileMetalComputer;
-import dan200.computercraft.shared.computer.blocks.BlockCommandComputer;
-import dan200.computercraft.shared.computer.blocks.BlockComputer;
-import dan200.computercraft.shared.computer.blocks.TileComputer;
+import dan200.computercraft.shared.computer.blocks.*;
 import dan200.computercraft.shared.computer.core.ClientComputerRegistry;
 import dan200.computercraft.shared.computer.core.ServerComputerRegistry;
 import dan200.computercraft.shared.media.items.ItemDiskExpanded;
@@ -83,7 +80,8 @@ import java.util.*;
 // UNIVERSAL //
 ///////////////
 
-@Mod(modid = "computercraft", name = "Computality", version = "${version}", guiFactory = "dan200.computercraft.client.gui.GuiConfig$Factory")
+@Mod(modid = "computercraft", name = "Computality", version = "${version}", guiFactory = "dan200.computercraft.client.gui.GuiConfig$Factory",
+dependencies = "required-after:nmmlib")
 public class ComputerCraft {
     // GUI IDs
     public static final int diskDriveGUIID = 100;
@@ -199,7 +197,7 @@ public class ComputerCraft {
 
     public static void openComputerGUI(EntityPlayer player, TileMetalComputer computer) {
         BlockPos pos = computer.getPos();
-        player.openGui(ComputerCraft.instance, ComputerCraft.metalGuiID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ());
+        player.openGui(ComputerCraft.instance, ComputerCraft.computerGUIID, player.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static void openPrinterGUI(EntityPlayer player, TilePrinter printer) {
@@ -689,6 +687,7 @@ public class ComputerCraft {
     // Blocks and Items
     public static class Blocks {
         public static BlockComputer computer;
+        public static BlockMetalComputer metalComputer;
         public static BlockPeripheral peripheral;
         public static BlockCable cable;
         public static BlockTurtle turtle;

@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -25,7 +25,7 @@ plugins {
 }
 */
 
-version = "1.11.2-1.82pr5"
+version = "1.12-1.82pr6"
 group = "dan200.computercraft"
 archivesBaseName = "computality"
 
@@ -35,11 +35,11 @@ compileJava {
 }
 
 minecraft {
-    version = "1.11.2-13.20.0.2286"
+    version = "1.12-14.21.0.2322"
     runDir = "run"
     replace '${version}', project.version
 
-    mappings = "snapshot_20170501"
+    mappings = "snapshot_20170611"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
