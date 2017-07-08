@@ -8,15 +8,17 @@ package dan200.computercraft.shared.util;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ImpostorShapelessRecipe extends ShapelessRecipes {
-    public ImpostorShapelessRecipe(ItemStack result, Object[] ingredients) {
-        super(result, new ArrayList(Arrays.asList(ingredients)));
+    public ImpostorShapelessRecipe(String group, ItemStack output, NonNullList<Ingredient> ingredients) {
+        super(group, output, ingredients);
     }
 
     @Override

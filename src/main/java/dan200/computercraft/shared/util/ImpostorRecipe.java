@@ -8,12 +8,14 @@ package dan200.computercraft.shared.util;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class ImpostorRecipe extends ShapedRecipes {
-    public ImpostorRecipe(int width, int height, ItemStack[] ingredients, ItemStack result) {
-        super(width, height, ingredients, result);
+    public ImpostorRecipe(String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result) {
+        super(group, width, height, ingredients, result);
     }
 
     @Override
