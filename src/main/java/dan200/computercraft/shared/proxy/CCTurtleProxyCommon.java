@@ -37,6 +37,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import nomansminecraft.lib.util.RecipeHelper;
@@ -233,7 +234,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
         // Add a bunch of impostor recipes
         if (isUpgradeVanilla(upgrade)) {
             // Add fake recipes to fool NEI
-            //List<IRecipe> recipeList = CraftingManager.field_193380_a.getKeys();
+            List<IRecipe> recipeList = GameData.getRecipeRegistry().getValues();
             ItemStack craftingItem = upgrade.getCraftingItem();
 
             // A turtle just containing this upgrade
@@ -247,7 +248,7 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
                     ItemStack craftedTurtle = TurtleItemFactory.create(-1, null, null, family, upgrade, null, 0, null);
                     ItemStack craftedTurtleFlipped = TurtleItemFactory.create(-1, null, null, family, null, upgrade, 0, null);
                     //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{baseTurtle, craftingItem}, craftedTurtle));
-                   // recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, baseTurtle}, craftedTurtleFlipped));
+                    //recipeList.add(new ImpostorRecipe(2, 1, new ItemStack[]{craftingItem, baseTurtle}, craftedTurtleFlipped));
 
                     // A turtle containing this upgrade and another upgrade
                     for (ITurtleUpgrade otherUpgrade : m_turtleUpgrades.values()) {
@@ -298,29 +299,42 @@ public abstract class CCTurtleProxyCommon implements ICCTurtleProxy {
 
         // Recipes
         // Turtle
-
-        //TODO
-        RecipeHelper.addRecipe("turtleRecipe",new TurtleRecipe(new Item[]{
+        /*GameRegistry.addRecipe(new TurtleRecipe(new Item[]{
                 Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT,
                 Items.IRON_INGOT, Item.getItemFromBlock(ComputerCraft.Blocks.computer), Items.IRON_INGOT,
                 Items.IRON_INGOT, Item.getItemFromBlock(Blocks.CHEST), Items.IRON_INGOT,
-        }, ComputerFamily.Normal));
+        }, ComputerFamily.Normal));*/
         //GameRegistry.addRecipe(new TurtleUpgradeRecipe());
-        RecipeHelper.addRecipe("turtleUpgrade",new TurtleUpgradeRecipe());
 
         // Impostor Turtle recipe (to fool NEI)
         ItemStack iron = new ItemStack(Items.IRON_INGOT, 1);
+        /*GameRegistry.addRecipe(new ImpostorRecipe(3, 3,
+                new ItemStack[]{
+                        iron, iron, iron,
+                        iron, ComputerItemFactory.create(-1, null, ComputerFamily.Normal), iron,
+                        iron, new ItemStack(Blocks.CHEST, 1), iron,
+                },
+                TurtleItemFactory.create(-1, null, null, ComputerFamily.Normal, null, null, 0, null)
+        ));*/
 
 
         // Advanced Turtle
-        RecipeHelper.addRecipe("advancedTurtleRecipe",new TurtleRecipe(new Item[]{
+       /* GameRegistry.addRecipe(new TurtleRecipe(new Item[]{
                 Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT,
                 Items.GOLD_INGOT, Item.getItemFromBlock(ComputerCraft.Blocks.computer), Items.GOLD_INGOT,
                 Items.GOLD_INGOT, Item.getItemFromBlock(Blocks.CHEST), Items.GOLD_INGOT,
-        }, ComputerFamily.Advanced));
+        }, ComputerFamily.Advanced));*/
 
         // Impostor Advanced Turtle recipe (to fool NEI)
         ItemStack gold = new ItemStack(Items.GOLD_INGOT, 1);
+        /*GameRegistry.addRecipe(new ImpostorRecipe(3, 3,
+                new ItemStack[]{
+                        gold, gold, gold,
+                        gold, ComputerItemFactory.create(-1, null, ComputerFamily.Advanced), gold,
+                        gold, new ItemStack(Blocks.CHEST, 1), gold,
+                },
+                TurtleItemFactory.create(-1, null, null, ComputerFamily.Advanced, null, null, 0, null)
+        ));*/
 
         // Upgrades
         ComputerCraft.Upgrades.wirelessModem = new TurtleModem(false, new ResourceLocation("computercraft", "wireless_modem"), 1);

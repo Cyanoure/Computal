@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ImpostorShapelessRecipe extends ShapelessRecipes {
-
-    public ImpostorShapelessRecipe(String p_i47500_1_, ItemStack p_i47500_2_, NonNullList<Ingredient> p_i47500_3_) {
-        super(p_i47500_1_, p_i47500_2_, p_i47500_3_);
+    public ImpostorShapelessRecipe(String group, ItemStack output, NonNullList<Ingredient> ingredients) {
+        super(group, output, ingredients);
     }
 
     @Override

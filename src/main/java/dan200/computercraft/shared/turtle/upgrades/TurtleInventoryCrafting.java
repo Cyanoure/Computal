@@ -51,7 +51,7 @@ public class TurtleInventoryCrafting extends InventoryCrafting {
         }
 
         // Check the actual crafting
-        return CraftingManager.findMatchingRecipe(this, m_turtle.getWorld());
+        return CraftingManager.findMatchingRecipe(this, m_turtle.getWorld()).getRecipeOutput();
     }
 
     public ArrayList<ItemStack> doCrafting(World world, int maxCount) {

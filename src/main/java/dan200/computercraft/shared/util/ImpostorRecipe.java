@@ -14,9 +14,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class ImpostorRecipe extends ShapedRecipes {
-
-    public ImpostorRecipe(String p_i47501_1_, int p_i47501_2_, int p_i47501_3_, NonNullList<Ingredient> p_i47501_4_, ItemStack p_i47501_5_) {
-        super(p_i47501_1_, p_i47501_2_, p_i47501_3_, p_i47501_4_, p_i47501_5_);
+    public ImpostorRecipe(String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result) {
+        super(group, width, height, ingredients, result);
     }
 
     @Override
