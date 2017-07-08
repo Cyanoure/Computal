@@ -94,7 +94,7 @@ public class DiskRecipe implements IRecipe {
         for (var7 = 0; var7 < par1InventoryCrafting.getSizeInventory(); ++var7) {
             ItemStack var8 = par1InventoryCrafting.getStackInSlot(var7);
 
-            if (var8 != null) {
+            if (!var8.isEmpty()) {
                 if (var8.getItem() instanceof ItemDiskLegacy) {
                     var6 = (ItemDiskLegacy) var8.getItem();
                     diskID = var6.getDiskID(var8);
