@@ -29,7 +29,7 @@ public class TileEntityMonitorRenderer extends TileEntitySpecialRenderer<TileMon
     }
 
     @Override
-    public void func_192841_a(TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i, float p_192841_10_) {
+    public void render(TileMonitor tileEntity, double posX, double posY, double posZ, float f, int i, float p_192841_10_) {
         if (tileEntity != null) {
             GlStateManager.pushMatrix();
             if (ComputerCraft.Config.monitorFullbright) {

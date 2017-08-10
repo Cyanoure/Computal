@@ -127,7 +127,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
     }
 
     @Override
-    public void func_192841_a(TileTurtle tileEntity, double posX, double posY, double posZ, float f, int i, float f2) {
+    public void render(TileTurtle tileEntity, double posX, double posY, double posZ, float f, int i, float f2) {
         if (tileEntity != null) {
             // Check the turtle isn't first person
             Entity viewEntity = Minecraft.getMinecraft().getRenderViewEntity();
@@ -191,7 +191,7 @@ public class TileEntityTurtleRenderer extends TileEntitySpecialRenderer<TileTurt
             ModelResourceLocation overlayModel = getTurtleOverlayModel(
                     family,
                     overlay,
-                    HolidayUtil.getCurrentHoliday() == Holiday.Christmas
+                    HolidayUtil.getCurrentHoliday() == Holiday.CHRISTMAS
             );
             if (overlayModel != null) {
                 GlStateManager.disableCull();

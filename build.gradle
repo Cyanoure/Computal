@@ -25,7 +25,7 @@ plugins {
 }
 */
 
-version = "1.12-1.82pr6"
+version = "1.82.1"
 group = "dan200.computercraft"
 archivesBaseName = "computality"
 
@@ -35,12 +35,13 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.0.2329"
+    version = "1.12-14.21.1.2397"
     runDir = "run"
+
     replace '${version}', project.version
 
 
-    mappings = "snapshot_20170615"
+    mappings = "snapshot_20170624"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

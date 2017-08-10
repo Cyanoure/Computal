@@ -19,7 +19,7 @@ public class ImpostorRecipe extends ShapedRecipes {
     }
 
     @Override
-    public boolean func_192399_d() {
+    public boolean isHidden() {
         return false;
     }
 

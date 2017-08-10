@@ -12,13 +12,11 @@ import dan200.computercraft.client.render.TileEntityMonitorRenderer;
 import dan200.computercraft.shared.computer.blocks.TileComputer;
 import dan200.computercraft.shared.computer.core.ClientComputer;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
-import dan200.computercraft.shared.computer.items.ItemCommandComputer;
 import dan200.computercraft.shared.computer.items.ItemComputer;
 import dan200.computercraft.shared.media.inventory.ContainerHeldItem;
 import dan200.computercraft.shared.media.items.ItemDiskLegacy;
 import dan200.computercraft.shared.media.items.ItemPrintout;
 import dan200.computercraft.shared.network.ComputerCraftPacket;
-import dan200.computercraft.shared.peripheral.common.ItemAdvancedModem;
 import dan200.computercraft.shared.peripheral.diskdrive.TileDiskDrive;
 import dan200.computercraft.shared.peripheral.monitor.TileMonitor;
 import dan200.computercraft.shared.peripheral.printer.TilePrinter;
@@ -28,21 +26,23 @@ import dan200.computercraft.shared.turtle.blocks.TileTurtle;
 import dan200.computercraft.shared.turtle.entity.TurtleVisionCamera;
 import dan200.computercraft.shared.util.Colour;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -55,7 +55,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import nomansminecraft.lib.util.Platform;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -71,17 +70,15 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
     public ComputerCraftProxyClient() {
     }
 
+    @Override
+    public void preInit() {
+        super.preInit();
+        MinecraftForge.EVENT_BUS.register(this);
+    }
     // IComputerCraftProxy implementation
 
-    @Override
-    public void init() {
-        super.init();
-        m_tick = 0;
-        m_renderFrame = 0;
-
-        // Load textures
-        Minecraft mc = Minecraft.getMinecraft();
-        m_fixedWidthFontRenderer = new FixedWidthFontRenderer(mc.getTextureManager());
+    @SubscribeEvent
+    public void registerModels(ModelRegistryEvent event) {
 
         // Register item models
         registerItemModel(ComputerCraft.Blocks.computer, new ItemMeshDefinition() {
@@ -95,8 +92,6 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
                 return (family == ComputerFamily.Advanced) ? advanced_computer : computer;
             }
         }, new String[]{"computer", "advanced_computer"});
-
-        registerWithMapper(ComputerCraft.Blocks.metalComputer);
 
         registerItemModel(ComputerCraft.Blocks.peripheral, 0, "peripheral");
         registerItemModel(ComputerCraft.Blocks.peripheral, 1, "wireless_modem");
@@ -165,6 +160,17 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
                 "pocket_computer", "pocket_computer_on", "pocket_computer_blinking",
                 "advanced_pocket_computer_off", "advanced_pocket_computer_on", "advanced_pocket_computer_blinking",
         });
+    }
+    @Override
+    public void init() {
+        super.init();
+        m_tick = 0;
+        m_renderFrame = 0;
+
+        // Load textures
+        Minecraft mc = Minecraft.getMinecraft();
+        m_fixedWidthFontRenderer = new FixedWidthFontRenderer(mc.getTextureManager());
+
 
         // Setup
         mc.getItemColors().registerItemColorHandler(new DiskColorHandler(ComputerCraft.Items.disk), ComputerCraft.Items.disk);
@@ -193,7 +199,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
     private void registerItemModel(Item item, int damage, String name) {
         ModelResourceLocation res = new ModelResourceLocation("computercraft:" + name, "inventory");
         ModelBakery.registerItemVariants(item, new ResourceLocation("computercraft", name));
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, damage, res);
+        ModelLoader.setCustomMeshDefinition(item, stack -> res);
     }
 
     private void registerItemModel(Block block, String name) {
@@ -203,16 +209,18 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
     private void registerItemModel(Item item, String name) {
         final ModelResourceLocation res = new ModelResourceLocation("computercraft:" + name, "inventory");
         ModelBakery.registerItemVariants(item, new ResourceLocation("computercraft", name));
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, new ItemMeshDefinition() {
-            @Override
-            public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return res;
-            }
-        });
+        ModelLoader.setCustomMeshDefinition(item, stack -> res);
     }
 
     private void registerItemModel(Block block, ItemMeshDefinition definition, String[] names) {
         registerItemModel(Item.getItemFromBlock(block), definition, names);
+    }
+
+    public static void registerWithMapper(Item item, String... types) {
+        for (int i = 0; i < types.length; i++) {
+            ResourceLocation location = item.getRegistryName();
+            ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(location, "type=" + types[i]));
+        }
     }
 
     private void registerItemModel(Item item, ItemMeshDefinition definition, String[] names) {
@@ -221,7 +229,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
             resources[i] = new ResourceLocation("computercraft", names[i]);
         }
         ModelBakery.registerItemVariants(item, resources);
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, definition);
+        ModelLoader.setCustomMeshDefinition(item, definition);
     }
 
     @Override
@@ -259,28 +267,7 @@ public class ComputerCraftProxyClient extends ComputerCraftProxyCommon {
             return super.getRecordInfo(recordStack);
         }
     }
-    public static void registerWithMapper(Block block) {
-        if (Platform.isClient() && block != null) {
-            final String resourcePath = String.format("%s:%s", "computercraft", block.getRegistryName().getResourcePath());
 
-            ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
-                @Override
-                protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                    return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
-                }
-            });
-
-            NonNullList<ItemStack> subBlocks = NonNullList.create();
-            Item item = Item.getItemFromBlock(block);
-            item.getSubItems(block.getCreativeTabToDisplayOn(), subBlocks);
-
-            for (ItemStack stack : subBlocks) {
-                IBlockState state = block.getStateFromMeta(stack.getMetadata());
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), stack.getMetadata(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(state.getProperties())));
-            }
-
-        }
-    }
 
     @Override
     public void playRecord(SoundEvent record, String recordInfo, World world, BlockPos pos) {

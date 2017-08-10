@@ -103,7 +103,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs)) {
+        if(isInCreativeTab(tabs)) {
             getSubItems(list, ComputerFamily.Normal);
             getSubItems(list, ComputerFamily.Advanced);
         }
@@ -210,7 +210,7 @@ public class ItemPocketComputer extends Item implements IComputerItem, IMedia {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag debug) {
-        if (debug.func_194127_a()) {
+        if (debug.isAdvanced()) {
             int id = getComputerID(stack);
             if (id >= 0) {
                 list.add("(Computer ID: " + id + ")");

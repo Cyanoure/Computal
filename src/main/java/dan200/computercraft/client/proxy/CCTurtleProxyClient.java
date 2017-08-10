@@ -27,8 +27,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -45,10 +47,14 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
     // IComputerCraftProxy implementation
 
     @Override
-    public void init() {
-        super.init();
+    public void preInit() {
+        super.preInit();
+        MinecraftForge.EVENT_BUS.register(this);
+        registerForgeHandlers();
+    }
 
-        // Register item models
+    @SubscribeEvent
+    public void registerModels(ModelRegistryEvent event) {
         ItemMeshDefinition turtleMeshDefinition = new ItemMeshDefinition() {
             private ModelResourceLocation turtle_dynamic = new ModelResourceLocation("computercraft:turtle_dynamic", "inventory");
 
@@ -69,12 +75,18 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
         registerItemModel(ComputerCraft.Blocks.turtle, turtleMeshDefinition, turtleModelNames);
         registerItemModel(ComputerCraft.Blocks.turtleExpanded, turtleMeshDefinition, turtleModelNames);
         registerItemModel(ComputerCraft.Blocks.turtleAdvanced, turtleMeshDefinition, turtleModelNames);
+    }
+    @Override
+    public void init() {
+        super.init();
+
+        // Register item models
+
 
         // Setup renderers
         ClientRegistry.bindTileEntitySpecialRenderer(TileTurtle.class, new TileEntityTurtleRenderer());
 
         // Setup client forge handlers
-        registerForgeHandlers();
     }
 
     private void registerItemModel(Block block, ItemMeshDefinition definition, String[] names) {
@@ -87,7 +99,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
             resources[i] = new ResourceLocation("computercraft:" + names[i]);
         }
         ModelBakery.registerItemVariants(item, resources);
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, definition);
+        ModelLoader.setCustomMeshDefinition(item, definition);
     }
 
     private void registerForgeHandlers() {
@@ -99,12 +111,6 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
         private TurtleSmartItemModel m_turtleSmartItemModel;
 
         public ForgeHandlers() {
-            m_turtleSmartItemModel = new TurtleSmartItemModel();
-            IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
-            if (resourceManager instanceof SimpleReloadableResourceManager) {
-                SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) resourceManager;
-                reloadableResourceManager.registerReloadListener(m_turtleSmartItemModel);
-            }
         }
 
         @SubscribeEvent
@@ -119,6 +125,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
             event.getMap().registerSprite(new ResourceLocation("computercraft", "blocks/crafty_upgrade"));
         }
 
+        @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void onModelBakeEvent(ModelBakeEvent event) {
             loadModel(event, "turtle_modem_off_left");
@@ -131,6 +138,13 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
             loadModel(event, "advanced_turtle_modem_on_left");
             loadModel(event, "advanced_turtle_modem_off_right");
             loadModel(event, "advanced_turtle_modem_on_right");
+
+            m_turtleSmartItemModel = new TurtleSmartItemModel();
+            IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+            if (resourceManager instanceof SimpleReloadableResourceManager) {
+                SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) resourceManager;
+                reloadableResourceManager.registerReloadListener(m_turtleSmartItemModel);
+            }
             loadSmartModel(event, "turtle_dynamic", m_turtleSmartItemModel);
         }
 
@@ -141,12 +155,7 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
             IBakedModel bakedModel = model.bake(
                     model.getDefaultState(),
                     DefaultVertexFormats.ITEM,
-                    new Function<ResourceLocation, TextureAtlasSprite>() {
-                        @Override
-                        public TextureAtlasSprite apply(ResourceLocation location) {
-                            return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-                        }
-                    }
+                    (Function<ResourceLocation, TextureAtlasSprite>) location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString())
             );
             event.getModelRegistry().putObject(
                     new ModelResourceLocation("computercraft:" + name, "inventory"),
@@ -158,6 +167,9 @@ public class CCTurtleProxyClient extends CCTurtleProxyCommon {
             event.getModelRegistry().putObject(
                     new ModelResourceLocation("computercraft:" + name, "inventory"),
                     smartModel
+            );
+            event.getModelRegistry().putObject(
+                    new ModelResourceLocation("computercraft:" + name, "normal"), smartModel
             );
         }
     }

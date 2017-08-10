@@ -24,13 +24,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TurtleUpgradeRecipe implements IRecipe {
+    ResourceLocation name= new ResourceLocation("computercraft","upgrade");
     public TurtleUpgradeRecipe() {
     }
 
     @Override
-    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
+    }
+
+    @Override
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return p_194133_1_>=2;
     }
 
@@ -145,18 +163,18 @@ public class TurtleUpgradeRecipe implements IRecipe {
     }
 
     @Override
-    public NonNullList<Ingredient> func_192400_c() {
+    public NonNullList<Ingredient> getIngredients() {
         return NonNullList.create();
     }
 
     @Override
-    public String func_193358_e() {
-        return "";
+    public boolean isHidden() {
+        return true;
     }
 
     @Override
-    public boolean func_192399_d() {
-        return true;
+    public String getGroup() {
+        return "";
     }
 
     @Override

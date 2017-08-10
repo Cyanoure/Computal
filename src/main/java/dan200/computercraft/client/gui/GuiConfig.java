@@ -9,7 +9,6 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,19 +43,9 @@ public class GuiConfig extends net.minecraftforge.fml.client.config.GuiConfig {
         }
 
         @Override
-        public Class<? extends GuiScreen> mainConfigGuiClass() {
-            return GuiConfig.class;
-        }
-
-        @Override
         public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
             return null;
         }
 
-        @Nullable
-        @Override
-        public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
-            return null;
-        }
     }
 }

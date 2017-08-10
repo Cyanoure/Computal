@@ -51,11 +51,7 @@ public class TurtleCompareCommand implements ITurtleCommand {
                     // Try createStackedBlock first
                     if (!lookAtBlock.hasTileEntity(lookAtState)) {
                         try {
-                            Method method = ReflectionHelper.findMethod(
-                                    Block.class, lookAtBlock,
-                                    new String[]{"func_149644_j", "j", "createStackedBlock"},
-                                    IBlockState.class
-                            );
+                            Method method = null;
                             if (method != null) {
                                 lookAtStack = (ItemStack) method.invoke(lookAtBlock, lookAtState);
                             }

@@ -158,7 +158,7 @@ public class ItemPrintout extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs)) {
+        if(isInCreativeTab(tabs)) {
             list.add(createSingleFromTitleAndText(null, new String[LINES_PER_PAGE], new String[LINES_PER_PAGE]));
             list.add(createMultipleFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));
             list.add(createBookFromTitleAndText(null, new String[2 * LINES_PER_PAGE], new String[2 * LINES_PER_PAGE]));

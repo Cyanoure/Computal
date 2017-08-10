@@ -14,23 +14,44 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nullable;
+
 public class DiskRecipe implements IRecipe {
+    ResourceLocation name= new ResourceLocation("computercraft","disk");
     public DiskRecipe() {
     }
 
     @Override
-    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
-        return p_194133_1_>=2||p_194133_2_>=2;
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
     }
 
     @Override
-    public NonNullList<Ingredient> func_192400_c() {
-        NonNullList<Ingredient> list = NonNullList.withSize(2, Ingredient.field_193370_a);
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
+    }
+
+    @Override
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
+        return p_194133_1_>=2||p_194133_2_>=2;
+    }
+
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> list = NonNullList.withSize(2, Ingredient.EMPTY);
         for (int i = 0; i < list.size(); i++) {
-            list.set(i, Ingredient.func_193369_a(new ItemStack(i == 0 ? Items.REDSTONE : Items.PAPER)));
+            list.set(i, Ingredient.fromStacks(new ItemStack(i == 0 ? Items.REDSTONE : Items.PAPER)));
         }
         return list;
     }

@@ -49,7 +49,7 @@ public class ItemDiskLegacy extends Item
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs))
+        if(isInCreativeTab(tabs))
         for (int colour = 0; colour < 16; ++colour) {
             ItemStack stack = createFromIDAndColour(-1, null, Colour.values()[colour].getHex());
             if (stack.getItem() == this) {
@@ -77,7 +77,7 @@ public class ItemDiskLegacy extends Item
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World player, List list, ITooltipFlag debug) {
-        if (debug.func_194127_a()) {
+        if (debug.isAdvanced()) {
             int id = getDiskID(stack);
             if (id >= 0) {
                 list.add("(Disk ID: " + id + ")");

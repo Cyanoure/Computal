@@ -1,3 +1,19 @@
+itemGroup.computality=Computality
+
+tile.computercraft.metal_computer.copper.name=Copper Metal Computer
+tile.computercraft.metal_computer.tin.name=Tin Metal Computer
+tile.computercraft.metal_computer.silver.name=Silver Metal Computer
+tile.computercraft.metal_computer.lead.name=Lead Metal Computer
+tile.computercraft.metal_computer.nickel.name=Nickel Metal Computer
+tile.computercraft.metal_computer.platinum.name=Platinum Metal Computer
+tile.computercraft.metal_computer.mithril.name=Mithril Metal Computer
+tile.computercraft.metal_computer.bronze.name=Bronze Metal Computer
+tile.computercraft.metal_computer.invar.name=Invar Metal Computer
+tile.computercraft.metal_computer.electrum.name=Electrum Metal Computer
+tile.computercraft.metal_computer.signalum.name=Signalum Metal Computer
+tile.computercraft.metal_computer.electrum.name=Electrum Metal Computer
+tile.computercraft.metal_computer.enderium.name=Enderium Metal Computer
+
 tile.computercraft.computer.name=Computer
 tile.computercraft.advanced_computer.name=Advanced Computer
 tile.computercraft.drive.name=Disk Drive

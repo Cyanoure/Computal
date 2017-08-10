@@ -57,7 +57,7 @@ public class ItemPeripheral extends ItemPeripheralBase {
 
     @Override
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs)) {
+        if(isInCreativeTab(tabs)) {
             list.add(PeripheralItemFactory.create(PeripheralType.DiskDrive, null, 1));
             list.add(PeripheralItemFactory.create(PeripheralType.Printer, null, 1));
             list.add(PeripheralItemFactory.create(PeripheralType.Monitor, null, 1));

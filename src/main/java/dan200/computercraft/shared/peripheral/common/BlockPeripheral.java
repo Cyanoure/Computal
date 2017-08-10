@@ -55,6 +55,8 @@ public class BlockPeripheral extends BlockPeripheralBase {
 
     @Override
     public int getLightValue(@Nonnull IBlockState state, IBlockAccess world, @Nonnull BlockPos pos) {
+        if(state.getBlock() != this)
+            return 0;
         if (!state.getPropertyKeys().contains(Properties.VARIANT)) return 0;
         switch (getPeripheralType(world, pos)) {
             case AdvancedMonitor:

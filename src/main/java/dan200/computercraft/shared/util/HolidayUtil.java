@@ -17,14 +17,14 @@ public class HolidayUtil {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         if (month == Calendar.FEBRUARY && day == 14) {
-            return Holiday.Valentines;
+            return Holiday.VALENTINES;
         } else if (month == Calendar.APRIL && day == 1) {
-            return Holiday.AprilFoolsDay;
+            return Holiday.APRIL_FOOLS_DAY;
         } else if (month == Calendar.OCTOBER && day == 31) {
-            return Holiday.Halloween;
+            return Holiday.HALLOWEEN;
         } else if (month == Calendar.DECEMBER && day >= 24 && day <= 30) {
-            return Holiday.Christmas;
+            return Holiday.CHRISTMAS;
         }
-        return Holiday.None;
+        return Holiday.NONE;
     }
 }

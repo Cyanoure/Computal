@@ -26,6 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReloadListener {
     private ItemStack m_defaultItem;
     private HashMap<TurtleModelCombination, IBakedModel> m_cachedModels;
@@ -40,8 +43,8 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
 
     public TurtleSmartItemModel() {
         m_defaultItem = TurtleItemFactory.create(-1, null, null, ComputerFamily.Normal, null, null, 0, null);
-        m_cachedModels = new HashMap<TurtleModelCombination, IBakedModel>();
-        m_overrides = new ItemOverrideList(new ArrayList<ItemOverride>()) {
+        m_cachedModels = new HashMap<>();
+        m_overrides = new ItemOverrideList(new ArrayList<>()) {
             @Override
             public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
                 ItemTurtleBase turtle = (ItemTurtleBase) stack.getItem();
@@ -50,7 +53,7 @@ public class TurtleSmartItemModel implements IBakedModel, IResourceManagerReload
                 ITurtleUpgrade leftUpgrade = turtle.getUpgrade(stack, TurtleSide.Left);
                 ITurtleUpgrade rightUpgrade = turtle.getUpgrade(stack, TurtleSide.Right);
                 ResourceLocation overlay = turtle.getOverlay(stack);
-                boolean christmas = HolidayUtil.getCurrentHoliday() == Holiday.Christmas;
+                boolean christmas = HolidayUtil.getCurrentHoliday() == Holiday.CHRISTMAS;
                 TurtleModelCombination combo = new TurtleModelCombination(family, colour, leftUpgrade, rightUpgrade, overlay, christmas);
                 if (m_cachedModels.containsKey(combo)) {
                     return m_cachedModels.get(combo);

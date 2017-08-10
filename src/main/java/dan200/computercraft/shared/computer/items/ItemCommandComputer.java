@@ -49,7 +49,7 @@ public class ItemCommandComputer extends ItemComputer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs))
+        if(isInCreativeTab(tabs))
         list.add(ComputerItemFactory.create(-1, null, ComputerFamily.Command));
     }
 

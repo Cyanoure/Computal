@@ -9,47 +9,55 @@ package dan200.computercraft.shared.turtle.recipes;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.computer.items.IComputerItem;
 import dan200.computercraft.shared.turtle.items.TurtleItemFactory;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TurtleRecipe implements IRecipe {
+    private final ResourceLocation name;
     private final Item[] m_recipe;
     private final ComputerFamily m_family;
 
     public TurtleRecipe(Item[] recipe, ComputerFamily family) {
         m_recipe = recipe;
         m_family = family;
+        name = new ResourceLocation("computercraft","turtle_"+family.name().toLowerCase());
     }
 
     @Override
-    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return p_194133_1_ >= 3 && p_194133_2_ >= 3;
     }
 
     @Override
-    public boolean func_192399_d() {
-        return false;
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
     }
 
     @Override
-    public String func_193358_e() {
-        return "turtleRecipe";
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
     }
-
     @Override
-    public NonNullList<Ingredient> func_192400_c() {
-        NonNullList<Ingredient> list = NonNullList.withSize(9, Ingredient.field_193370_a);
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> list = NonNullList.withSize(9, Ingredient.EMPTY);
         for (int i = 0; i < list.size(); i++) {
-            list.set(i,Ingredient.func_193369_a(new ItemStack(m_recipe[i])));
+            list.set(i,Ingredient.fromStacks(new ItemStack(m_recipe[i])));
         }
         return list;
     }
@@ -81,7 +89,7 @@ public class TurtleRecipe implements IRecipe {
                             computerID = itemComputer.getComputerID(item);
                             label = itemComputer.getLabel(item);
                         } else {
-                            return ItemStack.EMPTY;
+                                return ItemStack.EMPTY;
                         }
                     }
                 } else {

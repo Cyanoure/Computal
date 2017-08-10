@@ -11,28 +11,46 @@ import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import dan200.computercraft.shared.pocket.items.PocketComputerItemFactory;
-import net.minecraft.block.BlockWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class PocketComputerUpgradeRecipe implements IRecipe {
+    ResourceLocation name= new ResourceLocation("computercraft","pocket");
     public PocketComputerUpgradeRecipe() {
 
     }
 
     @Override
-    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
+    }
+
+    @Override
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return p_194133_2_ >=2;
     }
 
     @Override
-    public boolean func_192399_d() {
+    public boolean isHidden() {
         return true;
     }
 

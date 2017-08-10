@@ -38,7 +38,7 @@ public abstract class ItemComputerBase extends ItemBlock implements IComputerIte
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List list, ITooltipFlag debug) {
-        if (debug.func_194127_a()) {
+        if (debug.isAdvanced()) {
             int id = getComputerID(stack);
             if (id >= 0) {
                 list.add("(Computer ID: " + id + ")");

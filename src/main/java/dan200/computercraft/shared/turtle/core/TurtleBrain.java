@@ -920,7 +920,7 @@ public class TurtleBrain implements ITurtleAccess {
             if (world.isRemote && m_animation == TurtleAnimation.MoveForward && m_animationProgress == 4) {
                 // Spawn love pfx if valentines day
                 Holiday currentHoliday = HolidayUtil.getCurrentHoliday();
-                if (currentHoliday == Holiday.Valentines) {
+                if (currentHoliday == Holiday.VALENTINES) {
                     Vec3d position = getVisualPosition(1.0f);
                     if (position != null) {
                         double x = position.x + world.rand.nextGaussian() * 0.1;

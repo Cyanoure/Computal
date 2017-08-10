@@ -13,16 +13,36 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nullable;
+
 public class PrintoutRecipe implements IRecipe {
+    ResourceLocation name= new ResourceLocation("computercraft","printout");
     public PrintoutRecipe() {
     }
 
     @Override
-    public boolean func_194133_a(int p_194133_1_, int p_194133_2_) {
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return false;
+    }
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
     }
 
     @Override

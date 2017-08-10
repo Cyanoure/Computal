@@ -45,7 +45,7 @@ public abstract class ItemTurtleBase extends ItemComputerBase implements ITurtle
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
-        if(func_194125_a(tabs)) {
+        if(isInCreativeTab(tabs)) {
             List<ItemStack> all = new ArrayList<ItemStack>();
             ComputerCraft.addAllUpgradedTurtles(all);
             for (ItemStack stack : all) {
